@@ -4,34 +4,34 @@
     <template v-if="mode === 'full'">
       <div :class="css({ display: 'flex', flexDirection: 'column', flex: '1 1 auto', px: '2', overflow: 'auto', minHeight: 0 })">
         <div :class="navGroup">
-          <button
+          <NuxtLink
             v-for="item in primaryNavItems"
             :key="item.label"
-            type="button"
+            :to="itemTarget(item)"
             :class="isItemActive(item) ? itemActive : itemDefault"
-            @click="navigateTo(itemTarget(item))"
+            :aria-current="isItemActive(item) ? 'page' : undefined"
           >
-            <img :src="iconSrc(item.icon, isItemActive(item))" :alt="''" aria-hidden="true" width="24" height="24" :class="itemIcon" />
+            <MpIcon :name="item.icon" size="sm" :variant="isItemActive(item) ? 'fill' : 'outline'" :color="isItemActive(item) ? 'blue.400' : ''" />
             <span :class="itemLabel">{{ item.label }}</span>
-          </button>
+          </NuxtLink>
         </div>
         <div :class="navGroup">
-          <button
+          <NuxtLink
             v-for="item in secondaryNavItems"
             :key="item.label"
-            type="button"
+            :to="itemTarget(item)"
             :class="isItemActive(item) ? itemActive : itemDefault"
-            @click="navigateTo(itemTarget(item))"
+            :aria-current="isItemActive(item) ? 'page' : undefined"
           >
-            <img :src="iconSrc(item.icon, isItemActive(item))" :alt="''" aria-hidden="true" width="24" height="24" :class="itemIcon" />
+            <MpIcon :name="item.icon" size="sm" :variant="isItemActive(item) ? 'fill' : 'outline'" :color="isItemActive(item) ? 'blue.400' : ''" />
             <span :class="itemLabel">{{ item.label }}</span>
-          </button>
+          </NuxtLink>
         </div>
       </div>
 
       <div :class="css({ display: 'flex', alignItems: 'center', gap: '0.5', h: '68px', px: '3', borderTopWidth: '1px', borderTopStyle: 'solid', borderTopColor: 'gray.100', flexShrink: 0 })">
         <button type="button" :class="ghostBtn" aria-label="Collapse sidebar" @click="isMainNavCollapsed = true">
-          <img src="/icons/collapse.svg" alt="" aria-hidden="true" width="24" height="24" />
+          <MpIcon name="chevrons-left" />
         </button>
         <span :class="css({ flex: '1 1 auto', color: 'dark', fontSize: 'sm', lineHeight: 'md', fontWeight: 'regular', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' })">Company ID : 102938</span>
       </div>
@@ -40,41 +40,41 @@
     <!-- ============ RAIL + SUBMENU (collapsed main nav; panel only if submenu) ============ -->
     <template v-else>
       <!-- Icon rail (level 1) — collapsed main nav.
-           submenu mode: ash.100 bg + border-right (sits beside the level-2 panel;
+           submenu mode: gray.50 bg + border-right (sits beside the level-2 panel;
              position+zIndex so its opaque bg paints over the panel's drop shadow).
            rail-only mode (no submenu): transparent bg (= base) + no border. -->
       <div :class="mode === 'submenu' ? railBoxSubmenu : railBoxOnly">
         <div :class="css({ display: 'flex', flexDirection: 'column', flex: '1 1 auto', alignItems: 'center', px: '1', overflow: 'auto', minHeight: 0 })">
           <div :class="railGroup">
-            <button
+            <NuxtLink
               v-for="item in primaryNavItems"
               :key="item.label"
-              type="button"
+              :to="itemTarget(item)"
               :class="isItemActive(item) ? railActive : railDefault"
               :aria-label="item.label"
-              @click="navigateTo(itemTarget(item))"
+              :title="item.label"
             >
-              <img :src="iconSrc(item.icon, isItemActive(item))" :alt="''" aria-hidden="true" width="24" height="24" />
-            </button>
+              <MpIcon :name="item.icon" size="sm" :variant="isItemActive(item) ? 'fill' : 'outline'" :color="isItemActive(item) ? 'blue.400' : ''" />
+            </NuxtLink>
           </div>
           <div :class="railGroup">
-            <button
+            <NuxtLink
               v-for="item in secondaryNavItems"
               :key="item.label"
-              type="button"
+              :to="itemTarget(item)"
               :class="isItemActive(item) ? railActive : railDefault"
               :aria-label="item.label"
-              @click="navigateTo(itemTarget(item))"
+              :title="item.label"
             >
-              <img :src="iconSrc(item.icon, isItemActive(item))" :alt="''" aria-hidden="true" width="24" height="24" />
-            </button>
+              <MpIcon :name="item.icon" size="sm" :variant="isItemActive(item) ? 'fill' : 'outline'" :color="isItemActive(item) ? 'blue.400' : ''" />
+            </NuxtLink>
           </div>
         </div>
         <!-- Expand button ONLY in rail-only mode (no submenu). In submenu mode the
              rail has no expand button (the open submenu owns the space). -->
         <div v-if="mode === 'rail'" :class="css({ display: 'flex', alignItems: 'center', justifyContent: 'center', h: '68px', flexShrink: 0, borderTopWidth: '1px', borderTopStyle: 'solid', borderTopColor: 'gray.100' })">
           <button type="button" :class="ghostBtn" aria-label="Expand sidebar" @click="isMainNavCollapsed = false">
-            <img src="/icons/collapse.svg" alt="" aria-hidden="true" width="24" height="24" :class="css({ transform: 'rotate(180deg)' })" />
+            <MpIcon name="chevrons-right" />
           </button>
         </div>
       </div>
@@ -99,12 +99,10 @@
               v-for="child in activeParent?.children"
               :key="child.path"
               :to="child.path"
-              v-slot="{ isExactActive, navigate }"
-              custom
+              :class="route.path === child.path ? childActive : childDefault"
+              :aria-current="route.path === child.path ? 'page' : undefined"
             >
-              <button type="button" :class="isExactActive ? childActive : childDefault" @click="navigate">
-                {{ child.label }}
-              </button>
+              {{ child.label }}
             </NuxtLink>
           </div>
           <!-- Level-2 collapse button (collapses the panel, leaving a 16px sliver) — no border-top -->
@@ -140,16 +138,11 @@ interface NavChild {
 }
 interface NavItem {
   label: string
-  /** Base icon name in /public/icons/ — active variant uses `${icon}-1.svg` */
   icon: string
   /** Leaf route. Omitted when the item has children (it then routes to its first child). */
   path?: string
   children?: NavChild[]
 }
-
-defineProps<{
-  isCollapsed?: boolean
-}>()
 
 const route = useRoute()
 
@@ -158,10 +151,10 @@ const primaryNavItems: NavItem[] = [
   { label: 'Home', icon: 'home', path: '/' },
   { label: 'Job listings', icon: 'briefcase', path: '/job-listings' },
   { label: 'Talent pool', icon: 'people', path: '/talent-pool' },
-  { label: 'Candidates', icon: 'Executive', path: '/candidates' },
+  { label: 'Candidates', icon: 'profile', path: '/candidates' },
   {
     label: 'Assessments',
-    icon: 'Task-check',
+    icon: 'competencies',
     children: [
       { label: 'Library', path: '/assessments/library' },
       { label: 'My assessments', path: '/assessments/my-assessments' },
@@ -169,7 +162,7 @@ const primaryNavItems: NavItem[] = [
   },
   { label: 'Calendar', icon: 'calendar', path: '/calendar' },
   { label: 'Activity log', icon: 'log', path: '/activity-log' },
-  { label: 'Reports', icon: 'reports', path: '/reports' },
+  { label: 'Reports', icon: 'finance', path: '/reports' },
 ]
 
 const secondaryNavItems: NavItem[] = [
@@ -196,9 +189,16 @@ function isItemActive(item: NavItem): boolean {
 function itemTarget(item: NavItem): string {
   return item.path ?? item.children?.[0]?.path ?? '/'
 }
-function iconSrc(name: string, active: boolean): string {
-  return `/icons/${name}${active ? '-1' : ''}.svg`
+
+// ---- Keyboard shortcut: Cmd+B toggles main nav expand/collapse ----
+function onKeydown(e: KeyboardEvent) {
+  if (!e.metaKey || e.key !== 'b') return
+  e.preventDefault()
+  isMainNavCollapsed.value = !isMainNavCollapsed.value
 }
+
+onMounted(() => window.addEventListener('keydown', onKeydown))
+onUnmounted(() => window.removeEventListener('keydown', onKeydown))
 
 const activeParent = computed<NavItem | undefined>(() => allItems.find(hasActiveChild))
 const isSubmenuMode = computed(() => !!activeParent.value)
@@ -228,14 +228,15 @@ const panelStyle = computed(() => ({
 }))
 
 /* ---------- shared styles ---------- */
-const rootFull = css({ display: 'flex', flexDirection: 'column', w: '216px', h: '100%', bg: 'background', flexShrink: 0 })
+// rootFull: no bg — inherits from shell (background). Exception: rail in submenu mode uses gray.50.
+const rootFull = css({ display: 'flex', flexDirection: 'column', w: '216px', h: '100%', flexShrink: 0 })
 const rootSubmenu = css({ display: 'flex', flexDirection: 'row', h: '100%', flexShrink: 0, position: 'relative' })
 
 // Icon rail container — differs by mode:
 const railBoxBase = { display: 'flex', flexDirection: 'column', w: '56px', h: '100%', flexShrink: 0 } as const
-// submenu: ash.100 bg + border-right; relative/zIndex so bg covers the panel shadow.
+// submenu: gray.50 bg + border-right; relative/zIndex so bg covers the panel shadow.
 const railBoxSubmenu = css({
-  ...railBoxBase, bg: 'ash.100', position: 'relative', zIndex: 1,
+  ...railBoxBase, bg: 'gray.50', position: 'relative', zIndex: 1,
   borderRightWidth: '1px', borderRightStyle: 'solid', borderRightColor: 'gray.100',
 })
 // rail-only (no submenu): transparent (= base background), no border.
@@ -273,40 +274,43 @@ const navGroup = css({
   borderBottomWidth: '1px', borderBottomStyle: 'solid', borderBottomColor: 'gray.100',
 })
 
+// h: '36px' matches rail button height so icons don't shift vertically on collapse/expand.
 const itemBase = {
-  display: 'flex', alignItems: 'center', gap: '2', w: 'full', py: '1.5', px: '2',
+  display: 'flex', alignItems: 'center', gap: '2', w: 'full', height: '36px', px: '3',
   border: 'none', borderRadius: 'md', cursor: 'pointer', textAlign: 'left',
-  transition: 'background-color 120ms ease', fontFamily: 'inherit', fontSize: 'md', lineHeight: 'lg',
+  textDecoration: 'none',
+  transition: 'color 120ms ease', fontFamily: 'body', fontSize: 'md', lineHeight: 'lg',
 } as const
-const itemDefault = css({ ...itemBase, bg: 'transparent', color: 'dark', fontWeight: 'regular', _hover: { bg: 'gray.50' } })
+const itemDefault = css({ ...itemBase, bg: 'transparent', color: 'dark', fontWeight: 'regular', _hover: { bg: 'transparent', color: 'blue.400' } })
 const itemActive = css({ ...itemBase, bg: 'blue.100', color: 'blue.400', fontWeight: 'semiBold', _hover: { bg: 'blue.100' } })
-const itemIcon = css({ flexShrink: 0, display: 'block', w: '24px', h: '24px' })
 const itemLabel = css({ flex: '1 1 auto', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' })
 
 const railGroup = css({
   display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5', py: '4', w: 'full',
   borderBottomWidth: '1px', borderBottomStyle: 'solid', borderBottomColor: 'gray.100',
 })
-// h must match the full-mode item (36px) so icons don't shift vertically when
+// h must match full-mode item (36px) so icons don't shift vertically when
 // the main nav expands/collapses. Icon lands at the same x (16px) in both modes.
 const railBase = {
   display: 'flex', alignItems: 'center', justifyContent: 'center', w: '40px', h: '36px',
   border: 'none', borderRadius: 'md', cursor: 'pointer', flexShrink: 0,
-  transition: 'background-color 120ms ease',
+  textDecoration: 'none',
+  transition: 'color 120ms ease',
 } as const
-const railDefault = css({ ...railBase, bg: 'transparent', _hover: { bg: 'gray.50' } })
+const railDefault = css({ ...railBase, bg: 'transparent', color: 'dark', _hover: { bg: 'transparent', color: 'blue.400' } })
 const railActive = css({ ...railBase, bg: 'blue.100', _hover: { bg: 'blue.100' } })
 
 const childBase = {
   display: 'flex', alignItems: 'center', w: 'full', h: '36px', textAlign: 'left', border: 'none', cursor: 'pointer',
-  px: '3', borderRadius: 'md', fontFamily: 'inherit', fontSize: 'md', lineHeight: 'md',
-  transition: 'background-color 120ms ease',
+  px: '3', borderRadius: 'md', fontFamily: 'body', fontSize: 'md', lineHeight: 'md',
+  textDecoration: 'none',
+  transition: 'color 120ms ease',
 } as const
-const childDefault = css({ ...childBase, bg: 'transparent', color: 'dark', fontWeight: 'regular', _hover: { bg: 'ash.100' } })
+const childDefault = css({ ...childBase, bg: 'transparent', color: 'dark', fontWeight: 'regular', _hover: { bg: 'transparent', color: 'blue.400' } })
 const childActive = css({ ...childBase, bg: 'blue.100', color: 'blue.400', fontWeight: 'semiBold', _hover: { bg: 'blue.100' } })
 
 const ghostBtn = css({
-  display: 'inline-flex', alignItems: 'center', justifyContent: 'center', p: '1.5',
+  display: 'inline-flex', alignItems: 'center', justifyContent: 'center', w: '36px', h: '36px',
   border: 'none', bg: 'transparent', borderRadius: 'md', cursor: 'pointer', flexShrink: 0,
   transition: 'background-color 120ms ease', _hover: { bg: 'gray.50' },
 })
