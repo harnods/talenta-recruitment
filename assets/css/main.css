@@ -1,0 +1,46 @@
+/*
+ * Global styles — Talenta Recruitment
+ * Token mode: Pixel 3 Design Token 2.1
+ *
+ * Do NOT add raw hex, px sizes for typography, or spacing values here.
+ * Always reference CSS variables exposed by @mekari/pixel3.
+ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+#__nuxt {
+  height: 100%;
+}
+
+/*
+ * Router link resets — NuxtLink renders <a> tags.
+ * Placed in the pixel_reset layer (lowest priority) so Panda's css() color/
+ * text-decoration utilities (in pixel_utilities) always win. An UNLAYERED
+ * `a { color: inherit }` would otherwise beat layered utilities and force every
+ * link to inherit (e.g. breadcrumb `color: 'blue.400'` would render dark).
+ */
+@layer pixel_reset {
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+}
+
+/*
+ * Focus ring — use Pixel's focus token instead of browser default outline.
+ */
+:focus-visible {
+  outline: 2px solid var(--mp-colors-blue-400);
+  outline-offset: var(--mp-spacing-0\.5);
+}

@@ -1,0 +1,9 @@
+/*
+ * Pixel 3 CSS entry point — processed by @mekari/pixel3-postcss (Panda CSS)
+ * The PostCSS plugin transforms these @layer declarations into generated
+ * design-token utilities, resets, recipes, and component styles.
+ *
+ * Do NOT import a pre-built file from @mekari/pixel3 — there is none.
+ * This file IS the entry point; Panda CSS generates the actual output.
+ */
+@layer pixel_reset, pixel_base, pixel_tokens, pixel_recipes, pixel_utilities;

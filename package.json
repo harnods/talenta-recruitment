@@ -1,0 +1,24 @@
+{
+  "name": "talenta-recruitment",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "nuxt dev",
+    "build": "nuxt build",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "dependencies": {
+    "@mekari/pixel3": "latest",
+    "@mekari/pixel3-postcss": "latest",
+    "nuxt": "^3.13.0",
+    "vue": "^3.5.0",
+    "vue-router": "^4.4.0"
+  },
+  "devDependencies": {
+    "@nuxt/devtools": "latest",
+    "typescript": "^5.5.0",
+    "vue-tsc": "^2.1.0"
+  }
+}
